@@ -1,4 +1,3 @@
-from pyinspect.utils import dir_files
 from rich.filesize import decimal as format_size
 import sys
 import tempfile
@@ -6,9 +5,10 @@ import subprocess
 import os
 from pathlib import Path
 from rich import print
-from .paths import windows
+from rich.panel import Panel
 
-from .paths import notes_folder
+
+from .paths import notes_folder, windows
 from .utils import format_timestamp
 
 
@@ -57,12 +57,7 @@ def note_editor(file_path=None):
     return content
 
 
-def get_all_notes():
-    notes = dir_files(notes_folder, pattern="*.md")
-    return [n.name for n in notes]
-
-
-def get_note_metadata(note_name):
+def get_note_file_metadata(note_name):
     stats = _get_note_path(note_name).stat()
 
     if sys.platform == "Win32":
@@ -79,4 +74,14 @@ def get_note_metadata(note_name):
     size = format_size(stats.st_size)
 
     num_lines = str(sum(1 for line in open(_get_note_path(note_name))))
-    return created, edited, size, num_lines
+
+    items = []
+    for elem in (note_name, created, edited, size, num_lines):
+        items.append(
+            Panel.fit(
+                elem,
+                border_style="#1f1f1f",  # choice(colors),
+                padding=(-1, 1),
+            )
+        )
+    return items

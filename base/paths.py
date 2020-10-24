@@ -12,4 +12,7 @@ else:
 
 # Make subdirs
 notes_folder = base_folder / "notes"
+note_metadata_folder = base_folder / ".notes_metadata"
+
 notes_folder.mkdir(exist_ok=True)
+note_metadata_folder.mkdir(exist_ok=True)
