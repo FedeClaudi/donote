@@ -2,8 +2,10 @@ import sys
 from pathlib import Path
 
 if sys.platform == 'win32':
-    raise NotImplementedError
+    windows = True
+    base_folder = Path('D:\\Dropbox (UCL - SWC)\\Rotation_vte\\knowledge_base')
 else:
+    windows = False
     base_folder = Path('/Users/federicoclaudi/Dropbox (UCL)/Rotation_vte/knowledge_base')
 
 # Make subdirs

@@ -2,3 +2,6 @@ Todo:
   ☐ add `delete note`
   ☐ add tests and pre-commit
   ☐ Interactive note creation and edit @progress
+  ☐ add note tags and metadata in secret folder
+  ☐ add sorting options to list notes
+  ☐ add filter options to list notes

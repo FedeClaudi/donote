@@ -12,6 +12,7 @@ from pyinspect import what
 
 from ._notes import get_all_notes, get_note_metadata, _get_note_path
 from .note import Note
+from .paths import windows
 
 def open_note(note_name):
     return Note(note_name)
@@ -19,25 +20,35 @@ def open_note(note_name):
 def create_note_interactive(note_name):
     print(f'[{mocassin}]Making a new note: [{orange}]{note_name}')
 
-    path = _get_note_path(note_name)
+    path = _get_note_path(note_name, raise_error=False)
     if path.exists():
         print(f'[{orange}]A note with name {note_name} already exists.')
         if not Confirm.ask(f"Overwrite {path.name}?", default=False):
             print('Okay, not overwriting')
             return
 
-    # Create a new note in a temp file, use nano to edit it and
-    # then save to makrdown: https://stackoverflow.com/questions/3076798/start-nano-as-a-subprocess-from-python-capture-input
-    with tempfile.NamedTemporaryFile(mode='w+t') as temp:
-        subprocess.call(['nano', temp.name])
-
-    
-        with open(temp.name) as f: 
-            content = f.read()
-
+    # Create temp file to write note
+    temp =  tempfile.NamedTemporaryFile(mode='w+t', delete=False)
+    try:
+        if not windows:
+            subprocess.call(['nano', temp.name])
+        else:
+            subprocess.call(['C:\\Program Files\\Git\\usr\\bin\\nano.exe', temp.name])
+    except  Exception:
+        print('[red]Failed to crate note in interactive mode, creating empyt note')
+        return create_new_note(note_name)
         
-    # TODO save to file
+    # Read temp content and close
+    with open(temp.name) as f: 
+        content = f.read()
+    temp.close()
+    os.unlink(temp.name)
 
+
+    # Save note to file
+    Note.from_string(content, note_name).save()
+
+      
 
 def create_new_note(note_name):
     print(f'[{mocassin}]Making a new empty note: [{orange}]{note_name}')

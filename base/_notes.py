@@ -7,18 +7,17 @@ import sys
 from .paths import notes_folder
 from .utils import format_timestamp
 
-def _get_note_path(note_name):
+def _get_note_path(note_name, raise_error=True):
     if '.md' not in note_name:
         note_name += '.md'
     path = notes_folder/note_name
-    if not path.exists():
+    if not path.exists() and raise_error:
         raise FileNotFoundError(f'Could not find note with name {note_name}')
     return path
 
 def get_all_notes():
     notes = dir_files(notes_folder, pattern='*.md')
     return [n.name for n in notes]
-
 
 def get_note_metadata(note_name):
     stats = _get_note_path(note_name).stat()

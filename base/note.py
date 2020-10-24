@@ -7,14 +7,30 @@ from ._notes import _get_note_path
 
 
 class Note:
-    def __init__(self, note_name):
-        self.path = _get_note_path(note_name)
+    def __init__(self, note_name, raise_error=True):
+        self.path = _get_note_path(note_name, raise_error=raise_error)
         self.name = self.path.name
 
-        with open(self.path, 'r') as f:
-            self.raw_content = f.read()
+        try:
+            with open(self.path, 'r') as f:
+                self.raw_content = f.read()
 
-        self.content = Markdown(self.raw_content)
+            self.content = Markdown(self.raw_content)  # for rich printing
+        except FileNotFoundError as e:
+            if raise_error:
+                raise FileNotFoundError(e)
+
+    @classmethod
+    def from_string(cls, string, name):
+        note = cls(name, raise_error=False)
+        note.raw_content = string
+        return note
+
+    def save(self):
+        with open(self.path, 'w') as out:
+            out.write(self.raw_content)
+        print(f'[green]Saved note at: {self.path}')
+
 
     def show(self):
         show = Report(title=f'[b]{self.name}', show_info=True, color=mocassin, accent=orange)
