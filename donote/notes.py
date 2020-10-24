@@ -29,18 +29,21 @@ def show_note(note_name):
 
 def edit_note(note_name):
     Note(note_name).edit()
+    print(f':pencil:  [{mocassin}]finished editing [{orange}]{note_name}')
 
 
 def tag_note(note_name, tag):
     note = Note(note_name)
     note.add_tag(tag)
     note.save()
+    print(f':ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}')
 
 
 def untag_note(note_name, tag):
     note = Note(note_name)
     note.pop_tag(tag)
     note.save()
+    print(f':ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}')
 
 
 def get_all_notes():
@@ -104,12 +107,12 @@ def delete_note(note_name, force=False):
 
 def list_notes():
 
-    tb = Table(header_style="bold green", box=SIMPLE_HEAVY)
-    tb.add_column(header="Name", width=20)
-    tb.add_column(header="# lines", justify="center", width=8)
-    tb.add_column(header="size", justify="center", width=12)
-    tb.add_column(header="edited", justify="center", width=12)
-    tb.add_column(header="created", style="dim", justify="center", width=12)
+    tb = Table(header_style="bold green", box=SIMPLE_HEAVY, min_width=88)
+    tb.add_column(header="Name", min_width=20)
+    tb.add_column(header="# lines", justify="center", min_width=8)
+    tb.add_column(header="size", justify="center", min_width=16)
+    tb.add_column(header="edited", justify="center", min_width=16)
+    tb.add_column(header="created", style="dim", justify="center", min_width=16)
     tb.add_column(header="tags")
 
     notes = get_all_notes()

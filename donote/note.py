@@ -50,8 +50,7 @@ class Note:
     def _get_content(self):
         with open(self.path, "r") as f:
             self.raw_content = f.read()
-        self.content = Markdown(self.raw_content)  # for rich printing
-
+        self.content = Markdown(self.raw_content, inline_code_lexer='python')
         self.metadata = get_note_metadata(self.name)
 
     @property
@@ -105,7 +104,7 @@ class Note:
             out.write(self.raw_content)
         save_metadata(self.name, self.metadata)
 
-        print(f"[green]Saved note as: {self.path.name}")
+        print(f"[{mocassin}]:ok_hand:  Saved note as: [{orange}]{self.path.name}")
 
     def edit(self):
         note_editor(self.path)
@@ -113,26 +112,14 @@ class Note:
 
     def show(self):
         show = Report(
-            title=f"[b]{self.name}",
+            title=f":pencil:  {self.name}",
             show_info=True,
             color=mocassin,
             accent=orange,
         )
         show._type = self.name
 
-        # Iterate over note content
-        nodes = self.content.parsed.walker()
-        for n, (current, entering) in enumerate(nodes):
-            ntype = current.t
-            if current.first_child is None or not entering:
-                continue
-
-            if ntype in ("text", "paragraph"):
-                show.add(current.first_child.literal)
-
-            elif ntype == "heading":
-                if n > 0:
-                    show.spacer()
-                show.add(f"[bold {orange}]{current.first_child.literal}")
+        show.add(self.content, 'rich')
 
         show.print()
+ 

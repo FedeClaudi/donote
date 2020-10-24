@@ -9,7 +9,7 @@ requirements = ["pyinspect", "click", "rich>=9.0.0"]
 
 setup(
     name="donote",
-    version="0.0.2",
+    version="0.0.3",
     description="donote",
     long_description=long_description,
     long_description_content_type="text/markdown",
