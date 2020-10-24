@@ -1,5 +1,5 @@
 Todo:
-  ☐ add `delete note`
+  ✔ add `delete note` @done(20-10-24 20:43)
   ☐ add tests and pre-commit
   ☐ Interactive note creation and edit @progress
   ☐ add note tags and metadata in secret folder

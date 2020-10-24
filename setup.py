@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="knowledgebase",
-    version="0.0.1tc",  
+    version="0.0.1tc",
     description="Knowledge base",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,9 +24,5 @@ setup(
     url="https://github.com/FedeClaudi/knowledge_base",
     author="Federico Claudi",
     zip_safe=False,
-    entry_points={
-        "console_scripts": [
-            "kb = base.cli:cli_main",
-        ]
-    },
+    entry_points={"console_scripts": ["kb = base.cli:cli_main"]},
 )
