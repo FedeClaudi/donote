@@ -19,8 +19,6 @@ def _get_note_metadata_path(note_name, raise_error=True):
 
 
 def make_note_metadata(note_name, name=None, tags=None):
-    path = _get_note_metadata_path(note_name, raise_error=False)
-
     metadata = _metadata_template.copy()
     metadata["name"] = name if name is not None else ""
 
@@ -28,12 +26,11 @@ def make_note_metadata(note_name, name=None, tags=None):
         tags = [tags]
     metadata["tags"] = tags if tags is not None else []
 
-    with open(path, "w") as jfile:
-        json.dump(metadata, jfile)
+    return metadata
 
 
 def save_metadata(note_name, metadata):
-    path = _get_note_metadata_path(note_name)
+    path = _get_note_metadata_path(note_name, raise_error=False)
     with open(path, "w") as jfile:
         json.dump(metadata, jfile)
 

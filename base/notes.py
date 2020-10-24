@@ -60,23 +60,31 @@ def create_note_interactive(note_name):
 def create_new_note(note_name):
     print(f"[{mocassin}]Making a new empty note: [{orange}]{note_name}")
 
-    path = _get_note_path(note_name)
+    path = _get_note_path(note_name, raise_error=False)
     if path.exists():
         print(f"[{orange}]A note with name {note_name} already exists.")
-        if Confirm.ask(f"Overwrite {path.name}?", default=False):
-            Note.from_string("", note_name).save()
+        if not Confirm.ask(f"Overwrite {path.name}?", default=False):
+            print(f"[{mocassin}]    okay, not saving then.")
+            return
+
+    note = Note.from_string("", note_name)
+    note.save()
 
     print(f"[{mocassin}]    saved note at: [{orange}]{note_name}")
+    return note
 
 
-def delete_note(note_name):
+def delete_note(note_name, force=False):
     path = _get_note_path(note_name)
     metadata_path = _get_note_metadata_path(note_name)
 
-    if Confirm.ask(
-        f"[{mocassin}]Deleting note: [{orange}]{note_name}[/{orange}], continue?",
-        default=False,
-    ):
+    if not force:
+        confirm = Confirm.ask(
+            f"[{mocassin}]Deleting note: [{orange}]{note_name}[/{orange}], continue?",
+            default=False,
+        )
+
+    if force or confirm:
         path.unlink()
         metadata_path.unlink()
         print(f"    [{mocassin}]removed: [{orange}]{note_name}")

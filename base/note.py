@@ -62,7 +62,9 @@ class Note:
     def tags_render(self):
         tags = self.metadata["tags"]
         if not tags:
-            return "no tags"
+            return [
+                Panel.fit("no tags", border_style=blackboard, padding=(-1, 1))
+            ]
         else:
             tt = []
             for tag in tags:
@@ -84,8 +86,9 @@ class Note:
 
     def pop_tag(self, *tags):
         for tag in tags:
-            if tag not in self.metadata["tags"]:
-                self.metadata["tags"].pop(tag)
+            if tag in self.metadata["tags"]:
+                idx = self.metadata["tags"].index(tag)
+                self.metadata["tags"].pop(idx)
 
     @classmethod
     def from_string(cls, string, name):
