@@ -11,3 +11,11 @@ repos:
       pass_filenames: true
       # this seems to need to be here in addition to setup.cfg
       exclude: __init__.py
+# -   repo: local
+#     hooks:
+#     -   id: wily
+#         name: wily
+#         entry: wily diff
+#         verbose: true
+#         language: python
+#         additional_dependencies: [wily]
