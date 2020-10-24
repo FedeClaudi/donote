@@ -6,6 +6,8 @@ from .notes import (
     delete_note,
     show_note,
     edit_note,
+    tag_note,
+    untag_note,
 )
 
 commands = dict(
@@ -20,13 +22,17 @@ commands = dict(
     n=create_note_interactive,
     e=edit_note,
     edit=edit_note,
+    t=tag_note,
+    tag=tag_note,
+    untag=untag_note,
 )
 
 
 @click.command()
 @click.argument("command")
 @click.argument("note_name", default=None, required=False)
-def cli_main(command, note_name):
+@click.argument("tag", default=None, required=False)
+def cli_main(command, note_name, tag):
     if command == "list" or command == "l":
         list_notes()
     else:
@@ -34,6 +40,9 @@ def cli_main(command, note_name):
             raise ValueError("No note name passed")
 
         try:
-            commands[command](note_name)
+            if not tag:
+                commands[command](note_name)
+            else:
+                commands[command](note_name, tag)
         except KeyError:
             raise ValueError(f"Command {command} is not recognized.")

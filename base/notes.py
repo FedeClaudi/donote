@@ -31,6 +31,18 @@ def edit_note(note_name):
     Note(note_name).edit()
 
 
+def tag_note(note_name, tag):
+    note = Note(note_name)
+    note.add_tag(tag)
+    note.save()
+
+
+def untag_note(note_name, tag):
+    note = Note(note_name)
+    note.pop_tag(tag)
+    note.save()
+
+
 def get_all_notes():
     notes = dir_files(notes_folder, pattern="*.md")
     return [open_note(n.name) for n in notes]
@@ -93,7 +105,7 @@ def delete_note(note_name, force=False):
 def list_notes():
 
     tb = Table(header_style="bold green", box=SIMPLE_HEAVY)
-    tb.add_column(header="Name", width=15)
+    tb.add_column(header="Name", width=20)
     tb.add_column(header="# lines", justify="center", width=8)
     tb.add_column(header="size", justify="center", width=12)
     tb.add_column(header="edited", justify="center", width=12)
