@@ -9,12 +9,12 @@ The minimalist note editor for your terminal.
 ![](kb.png)
 
 
-`knowledge` base is a python implementation of a minimalist note editor for your terminal.
+`donote` is a python implementation of a minimalist note editor for your terminal.
 It facilitates creating, editing and managing notes as `markdown` files.
 
 As such, it provides a CLI with the followng sintax:
 ```shell
-kb <command> <note_name (optional)> <tag (optional)>
+dono <command> <note_name (optional)> <tag (optional)>
 ```
 
 The **commands** include:
@@ -33,10 +33,10 @@ Editing a note opens the markdown file using `nano`, other editors can be used t
 
 ## Installation
 ```
-    pip install knowledgebase
+    pip install donote
 ```
 
-**Disclaimer**: `knowledgebase` is a personal project, as such the path to where the notes are saved on my machine are hardcoded. If you want to use `knowledgebase` let me know and we can improve this (or you can fork this repository and alter the paths).
+**Disclaimer**: `donote` is a personal project, as such the path to where the notes are saved on my machine are hardcoded. If you want to use `donote` let me know and we can improve this (or you can fork this repository and alter the paths).
 
 
 **Built with `rich` and `pyinspect`**

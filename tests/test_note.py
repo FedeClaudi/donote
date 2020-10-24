@@ -1,11 +1,11 @@
-from base.notes import (
+from donote.notes import (
     create_new_note,
     open_note,
     list_notes,
     delete_note,
     show_note,
 )
-from base.note import Note
+from donote.note import Note
 
 
 def test_create_note():

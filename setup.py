@@ -8,9 +8,9 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 requirements = ["pyinspect", "click", "rich>=9.0.0"]
 
 setup(
-    name="knowledgebase",
-    version="0.0.1tc",
-    description="Knowledge base",
+    name="donote",
+    version="0.0.2",
+    description="donote",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=requirements,
@@ -21,5 +21,5 @@ setup(
     url="https://github.com/FedeClaudi/knowledge_base",
     author="Federico Claudi",
     zip_safe=False,
-    entry_points={"console_scripts": ["kb = base.cli:cli_main"]},
+    entry_points={"console_scripts": ["dono = donote.cli:cli_main"]},
 )
