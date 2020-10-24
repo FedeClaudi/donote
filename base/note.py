@@ -2,9 +2,21 @@ from rich.markdown import Markdown
 from rich import print
 from pyinspect import Report, what
 from pyinspect._colors import orange, mocassin
+import tempfile
 
 from ._notes import _get_note_path
 
+
+def create_note_interactive(note_name):
+    path = _get_note_path(note_name)
+    if path.exists():
+        print(f'[{orange}]A note with name {note_name} already exists.')
+        if Confirm.ask(f"Overwrite {path.name}?", default=False):
+            print('Okay, not overwriting')
+            return
+
+    # Create a new note in a temp file, use nano to edit it and
+    # then save to makrdown: https://stackoverflow.com/questions/3076798/start-nano-as-a-subprocess-from-python-capture-input
 
 class Note:
     def __init__(self, note_name):

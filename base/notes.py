@@ -1,5 +1,5 @@
 from pyinspect import Report
-from pyinspect._colors import mocassin
+from pyinspect._colors import mocassin, orange
 from rich.table import Table
 from rich.box import SIMPLE_HEAVY
 
@@ -11,8 +11,12 @@ def open_note(note_name):
 
 
 def make_new_note(note_name):
-    with open(_get_note_path(note_name), 'w') as f:
-        f.write('')
+    path = _get_note_path(note_name)
+    if path.exists():
+        print(f'[{orange}]A note with name {note_name} already exists.')
+        if Confirm.ask(f"Overwrite {path.name}?", default=False)
+            with open(path, 'w') as f:
+                f.write('')
 
 
 def list_notes():
