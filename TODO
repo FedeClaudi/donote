@@ -1,4 +1,4 @@
 Todo:
   ☐ add `delete note`
   ☐ add tests and pre-commit
-  ☐ Interactive note creation
+  ☐ Interactive note creation and edit @progress

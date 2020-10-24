@@ -2,21 +2,54 @@ from pyinspect import Report
 from pyinspect._colors import mocassin, orange
 from rich.table import Table
 from rich.box import SIMPLE_HEAVY
+import sys
+import tempfile
+import subprocess
+import os
+from rich import print
+from rich.prompt import Confirm
+from pyinspect import what
 
-from ._notes import get_all_notes, get_note_metadata
+from ._notes import get_all_notes, get_note_metadata, _get_note_path
 from .note import Note
 
 def open_note(note_name):
     return Note(note_name)
 
+def create_note_interactive(note_name):
+    print(f'[{mocassin}]Making a new note: [{orange}]{note_name}')
 
-def make_new_note(note_name):
     path = _get_note_path(note_name)
     if path.exists():
         print(f'[{orange}]A note with name {note_name} already exists.')
-        if Confirm.ask(f"Overwrite {path.name}?", default=False)
+        if not Confirm.ask(f"Overwrite {path.name}?", default=False):
+            print('Okay, not overwriting')
+            return
+
+    # Create a new note in a temp file, use nano to edit it and
+    # then save to makrdown: https://stackoverflow.com/questions/3076798/start-nano-as-a-subprocess-from-python-capture-input
+    with tempfile.NamedTemporaryFile(mode='w+t') as temp:
+        subprocess.call(['nano', temp.name])
+
+    
+        with open(temp.name) as f: 
+            content = f.read()
+
+        
+    # TODO save to file
+
+
+def create_new_note(note_name):
+    print(f'[{mocassin}]Making a new empty note: [{orange}]{note_name}')
+
+    path = _get_note_path(note_name)
+    if path.exists():
+        print(f'[{orange}]A note with name {note_name} already exists.')
+        if Confirm.ask(f"Overwrite {path.name}?", default=False):
             with open(path, 'w') as f:
                 f.write('')
+
+    print(f'[{mocassin}]    saved note at: [{orange}]{note_name}')
 
 
 def list_notes():

@@ -1,3 +1,3 @@
-from base import list_notes, Note, open_note
+from base import list_notes, Note, open_note, create_note_interactive
 
-open_note('test').show()
+create_note_interactive('test')
