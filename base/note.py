@@ -3,7 +3,7 @@ from rich import print
 from pyinspect import Report
 from pyinspect._colors import orange, mocassin
 
-from ._notes import _get_note_path
+from ._notes import _get_note_path, note_editor
 
 
 class Note:
@@ -12,13 +12,15 @@ class Note:
         self.name = self.path.name
 
         try:
-            with open(self.path, "r") as f:
-                self.raw_content = f.read()
-
-            self.content = Markdown(self.raw_content)  # for rich printing
+            self._get_content()
         except FileNotFoundError as e:
             if raise_error:
                 raise FileNotFoundError(e)
+
+    def _get_content(self):
+        with open(self.path, "r") as f:
+            self.raw_content = f.read()
+        self.content = Markdown(self.raw_content)  # for rich printing
 
     @classmethod
     def from_string(cls, string, name):
@@ -30,6 +32,10 @@ class Note:
         with open(self.path, "w") as out:
             out.write(self.raw_content)
         print(f"[green]Saved note at: {self.path}")
+
+    def edit(self):
+        note_editor(self.path)
+        self._get_content()
 
     def show(self):
         show = Report(

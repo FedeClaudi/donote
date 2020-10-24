@@ -2,21 +2,28 @@ from pyinspect import Report
 from pyinspect._colors import mocassin, orange
 from rich.table import Table
 from rich.box import SIMPLE_HEAVY
-
-import tempfile
-import subprocess
-import os
 from rich import print
 from rich.prompt import Confirm
 
-
-from ._notes import get_all_notes, get_note_metadata, _get_note_path
+from ._notes import (
+    get_all_notes,
+    get_note_metadata,
+    _get_note_path,
+    note_editor,
+)
 from .note import Note
-from .paths import windows
 
 
 def open_note(note_name):
     return Note(note_name)
+
+
+def show_note(note_name):
+    Note(note_name).show()
+
+
+def edit_note(note_name):
+    Note(note_name).edit()
 
 
 def create_note_interactive(note_name):
@@ -29,26 +36,12 @@ def create_note_interactive(note_name):
             print("Okay, not overwriting")
             return
 
-    # Create temp file to write note
-    temp = tempfile.NamedTemporaryFile(mode="w+t", delete=False)
+    # Create a live editor to fill in note content
     try:
-        if not windows:
-            subprocess.call(["nano", temp.name])
-        else:
-            subprocess.call(
-                ["C:\\Program Files\\Git\\usr\\bin\\nano.exe", temp.name]
-            )
+        content = note_editor()
     except Exception:
-        print(
-            "[red]Failed to crate note in interactive mode, creating empyt note"
-        )
+        print(f"[{orange}]Creating empty note instead")
         return create_new_note(note_name)
-
-    # Read temp content and close
-    with open(temp.name) as f:
-        content = f.read()
-    temp.close()
-    os.unlink(temp.name)
 
     # Save note to file
     Note.from_string(content, note_name).save()

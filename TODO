@@ -1,7 +1,12 @@
 Todo:
   ✔ add `delete note` @done(20-10-24 20:43)
-  ☐ add tests and pre-commit
-  ☐ Interactive note creation and edit @progress
+  ☐ add tests
+  ✔ add pre-commit @done(20-10-24 20:46)
+  ✔ Interactive note creation and edit @progress @done(20-10-24 21:04)
+  
+  ☐ panel rendering doesn't respect line spaces
+  ☐ panel rendering truncates long lines
+
   ☐ add note tags and metadata in secret folder
   ☐ add sorting options to list notes
   ☐ add filter options to list notes

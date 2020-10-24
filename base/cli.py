@@ -4,25 +4,36 @@ from .notes import (
     open_note,
     list_notes,
     delete_note,
+    show_note,
+    edit_note,
+)
+
+commands = dict(
+    show=show_note,
+    remove=delete_note,
+    rm=delete_note,
+    delete=delete_note,
+    open=open_note,
+    o=open_note,
+    add=create_note_interactive,
+    new=create_note_interactive,
+    n=create_note_interactive,
+    e=edit_note,
+    edit=edit_note,
 )
 
 
 @click.command()
-@click.option("-n", "--new", "new_note")
-@click.option("-o", "--open", "to_open")
-@click.option("-s", "--show", "to_show")
-@click.option("-rm", "--remove", "to_remove")
-@click.option("-lst", is_flag=True)
-def cli_main(new_note, to_open, to_show, to_remove, lst=False):
-
-    if new_note is not None:
-        create_note_interactive(new_note)
-
-    if to_show:
-        open_note(to_show).show()
-
-    if to_remove:
-        delete_note(to_remove)
-
-    if lst:
+@click.argument("command")
+@click.argument("note_name", default=None, required=False)
+def cli_main(command, note_name):
+    if command == "list" or command == "l":
         list_notes()
+    else:
+        if note_name is None:
+            raise ValueError("No note name passed")
+
+        try:
+            commands[command](note_name)
+        except KeyError:
+            raise ValueError(f"Command {command} is not recognized.")

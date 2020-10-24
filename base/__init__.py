@@ -10,4 +10,5 @@ from .notes import (
     list_notes,
     create_note_interactive,
     delete_note,
+    edit_note,
 )
