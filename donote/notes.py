@@ -3,7 +3,7 @@ from rich.table import Table
 from rich.box import SIMPLE_HEAVY
 from rich.prompt import Confirm
 from rich import print
-from pyinspect.utils import dir_files
+from pyinspect.utils import dir_files, listdir
 
 from ._notes import (
     get_note_file_metadata,
@@ -105,7 +105,7 @@ def delete_note(note_name, force=False):
         print(f"    [{mocassin}]removed: [{orange}]{note_name}")
 
 
-def list_notes():
+def list_notes(list_files=False):
 
     tb = Table(header_style="bold green", box=SIMPLE_HEAVY, min_width=88)
     tb.add_column(header="Name", min_width=20)
@@ -123,4 +123,8 @@ def list_notes():
         name.style = f"bold {mocassin}"
 
         tb.add_row(name, num_lines, size, edited, created, *note.tags_render)
+    
     print(tb)
+
+    if list_files:
+        listdir(notes_folder, extension='md')
