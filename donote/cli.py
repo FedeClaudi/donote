@@ -8,6 +8,7 @@ from .notes import (
     edit_note,
     tag_note,
     untag_note,
+    show_file,
 )
 
 commands = dict(
@@ -26,6 +27,8 @@ commands = dict(
     t=tag_note,
     tag=tag_note,
     untag=untag_note,
+    sf=show_file,
+    showfile=show_file,
 )
 
 

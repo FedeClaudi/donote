@@ -1,6 +1,22 @@
 from rich.markup import escape
 from unicodeit import replace
-from pyinspect._colors import lightorange, lightgreen2
+from pyinspect._colors import lightorange, lightgreen2, lightgray
+from pyinspect.utils import stringify
+from rich.syntax import Syntax
+
+HANDLED = (
+    "text",
+    "paragraph",
+    "strong",
+    "code",
+    "code_block",
+    "list",
+    "document",
+    "heading",
+    "block_quote",
+    "html_inline",
+    "html_block",
+)
 
 
 def parse_text(txt):
@@ -14,10 +30,20 @@ def parse_text(txt):
 def parse_paragraph(node, in_list=False):
     paragraph = ""
     for sub, ent in node.walker():
-        if sub.t == "text":
-            paragraph += sub.literal
+        if sub.t in ("text"):
+            txt = stringify(sub.literal, maxlen=-1).strip()
+            paragraph += txt if txt != "None" else ""
+        elif sub.t in ("strong"):
+            txt = stringify(sub.literal, maxlen=-1).strip()
+            paragraph += f"[b]{txt}[/b]" if txt != "None" else ""
+        elif sub.t in ("italic"):
+            txt = stringify(sub.literal, maxlen=-1).strip()
+            paragraph += f"[i]{txt}[/i]" if txt != "None" else ""
         elif sub.t == "code":
-            paragraph += f"`{sub.literal}`"
+            txt = stringify(
+                Syntax(sub.literal, lexer_name="python"), maxlen=-1
+            ).strip()
+            paragraph += f"`{txt}`"
 
     paragraph = parse_text(paragraph)
 
@@ -29,3 +55,23 @@ def parse_paragraph(node, in_list=False):
         color = None
 
     return escape(paragraph), color
+
+
+def parse_block_quote(node):
+    txt, color = parse_paragraph(node)
+
+    return txt, f"[dim {color}]" if color is not None else "[dim]"
+
+
+def parse_html_block(node):
+    txt = ""
+    for sub, ent in node.walker():
+        txt += sub.literal + "\n"
+    return txt if not txt.startswith("<!--") else f"[dim green]{txt}"
+
+
+def parse_html_inline(node):
+    txt = ""
+    for sub, ent in node.walker():
+        txt += sub.literal
+    return f"[{lightgray}]{txt}"

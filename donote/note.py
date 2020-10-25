@@ -19,7 +19,13 @@ from pyinspect._colors import (
 
 from ._notes import _get_note_path, note_editor
 from ._metadata import make_note_metadata, get_note_metadata, save_metadata
-from ._markdown import parse_paragraph
+from ._markdown import (
+    parse_paragraph,
+    parse_block_quote,
+    parse_html_block,
+    parse_html_inline,
+    HANDLED,
+)
 
 blackboard = "#1f1f1f"
 colors = [
@@ -48,11 +54,13 @@ class Note:
             if raise_error:
                 raise FileNotFoundError(e)
 
-    def _get_content(self):
+    def _get_content(self, ignore_metadata=False):
         with open(self.path, "r") as f:
             self.raw_content = f.read()
         self.content = Markdown(self.raw_content, inline_code_lexer="python")
-        self.metadata = get_note_metadata(self.name)
+
+        if not ignore_metadata:
+            self.metadata = get_note_metadata(self.name)
 
     @property
     def tags(self):
@@ -119,8 +127,10 @@ class Note:
         show._type = f":pencil:  {self.name}"
 
         in_list, first_header = False, True
+        in_quote = False
         for current, entering in self.content.parsed.walker():
             node_type = current.t
+
             if node_type in ("heading") and entering:
                 if not first_header:
                     show.spacer(2)
@@ -130,6 +140,7 @@ class Note:
 
             elif node_type in ("list") and entering:
                 in_list = True
+                first_header = False
                 for sub, ent in current.walker():
                     if sub.t == "paragraph" and ent:
                         paragraph, color = parse_paragraph(sub)
@@ -143,7 +154,13 @@ class Note:
                 in_list = False
                 show.spacer()
 
-            elif node_type in ("paragraph") and entering and not in_list:
+            elif (
+                node_type in ("paragraph")
+                and entering
+                and not in_list
+                and not in_quote
+            ):
+                first_header = False
                 paragraph, color = parse_paragraph(current)
                 show.add(
                     f"{paragraph}"
@@ -151,13 +168,32 @@ class Note:
                     else f"[{color}]{paragraph}"
                 )
 
-            elif node_type == "softbreak":
+            elif node_type == "softbreak" and entering:
                 show.spacer()
 
-            elif node_type == "code_block":
+            elif node_type == "code_block" and entering:
+                first_header = False
                 show.spacer()
                 language = current.info if current.info else "python"
                 show.add(current.literal, "code", language=language)
                 show.spacer()
+
+            elif node_type == "block_quote" and entering:
+                txt, style = parse_block_quote(current)
+                show.add(f"[b]> [/b]{style}{txt}")
+                in_quote = True
+            elif node_type == "block_quote" and not entering:
+                in_quote = False
+
+            elif node_type == "html_block" and entering:
+                show.add(parse_html_block(current))
+            elif node_type == "html_inline" and entering:
+                show.add(parse_html_inline(current))
+
+            else:
+                if node_type not in HANDLED:
+                    print(
+                        f"Markdown tag not handled yet: [b {orange}]{node_type}"
+                    )
 
         show.print()

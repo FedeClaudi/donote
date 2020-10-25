@@ -4,6 +4,7 @@ from rich.box import SIMPLE_HEAVY
 from rich.prompt import Confirm
 from rich import print
 from pyinspect.utils import dir_files, listdir
+from pathlib import Path
 
 from ._notes import (
     get_note_file_metadata,
@@ -15,6 +16,20 @@ from .paths import notes_folder
 from ._metadata import _get_note_metadata_path
 
 
+def show_file(filename):
+    if not filename.endswith(".md"):
+        raise ValueError(
+            f"The file passed does not appear to be markdown: {filename}"
+        )
+
+    path = Path(filename)
+
+    note = Note(path.name.replace(".md", ""), raise_error=False)
+    note.path = path
+    note._get_content(ignore_metadata=True)
+    note.show()
+
+
 def open_note(note_name):
     try:
         return Note(note_name)
@@ -24,23 +39,23 @@ def open_note(note_name):
 
 
 def show_note(note_name):
-    Note(note_name).show()
+    open_note(note_name).show()
 
 
 def edit_note(note_name):
-    Note(note_name).edit()
+    open_note(note_name).edit()
     print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")
 
 
 def tag_note(note_name, tag):
-    note = Note(note_name)
+    note = open_note(note_name)
     note.add_tag(tag)
     note.save()
     print(f":ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}")
 
 
 def untag_note(note_name, tag):
-    note = Note(note_name)
+    note = open_note(note_name)
     note.pop_tag(tag)
     note.save()
     print(f":ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}")
