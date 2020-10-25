@@ -12,6 +12,7 @@ from .notes import (
 
 commands = dict(
     show=show_note,
+    s=show_note,
     remove=delete_note,
     rm=delete_note,
     delete=delete_note,
