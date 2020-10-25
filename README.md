@@ -19,13 +19,13 @@ dono <command> <note_name (optional)> <tag (optional)>
 
 The **commands** include:
 
-- `l` or `list` to list all notes
-- `show <note_name>` to render a single note in the terminal
-- `e/edit <note_name>` to edit an existing note
-- `rm/remove <note_name>` to delete a note
-- `n/new <note_name>` to create a new note with a given Name
-- `t/tag <note_name> <tag>` to add a new tag to an existing note
-- `untag <note_name> <tag>` to remove a tag to an existing note
+- `note l/list` to list all notes
+- `note show <note_name>` to render a single note in the terminal
+- `note e/edit <note_name>` to edit an existing note
+- `note rm/remove <note_name>` to delete a note
+- `note n/new <note_name>` to create a new note with a given Name
+- `note t/tag <note_name> <tag>` to add a new tag to an existing note
+- `note untag <note_name> <tag>` to remove a tag to an existing note
 
 
 Editing a note opens the markdown file using `nano`, other editors can be used to edit the `.md` files externally.

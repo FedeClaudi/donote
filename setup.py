@@ -21,5 +21,5 @@ setup(
     url="https://github.com/FedeClaudi/knowledge_base",
     author="Federico Claudi",
     zip_safe=False,
-    entry_points={"console_scripts": ["dono = donote.cli:cli_main"]},
+    entry_points={"console_scripts": ["note = donote.cli:cli_main"]},
 )
