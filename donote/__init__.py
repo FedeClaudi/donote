@@ -11,5 +11,5 @@ from .notes import (
     create_note_interactive,
     delete_note,
     edit_note,
-    show_note
+    show_note,
 )

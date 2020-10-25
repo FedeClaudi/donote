@@ -29,21 +29,21 @@ def show_note(note_name):
 
 def edit_note(note_name):
     Note(note_name).edit()
-    print(f':pencil:  [{mocassin}]finished editing [{orange}]{note_name}')
+    print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")
 
 
 def tag_note(note_name, tag):
     note = Note(note_name)
     note.add_tag(tag)
     note.save()
-    print(f':ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}')
+    print(f":ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}")
 
 
 def untag_note(note_name, tag):
     note = Note(note_name)
     note.pop_tag(tag)
     note.save()
-    print(f':ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}')
+    print(f":ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}")
 
 
 def get_all_notes():
@@ -112,7 +112,9 @@ def list_notes(list_files=False):
     tb.add_column(header="# lines", justify="center", min_width=8)
     tb.add_column(header="size", justify="center", min_width=16)
     tb.add_column(header="edited", justify="center", min_width=16)
-    tb.add_column(header="created", style="dim", justify="center", min_width=16)
+    tb.add_column(
+        header="created", style="dim", justify="center", min_width=16
+    )
     tb.add_column(header="tags")
 
     notes = get_all_notes()
@@ -123,8 +125,8 @@ def list_notes(list_files=False):
         name.style = f"bold {mocassin}"
 
         tb.add_row(name, num_lines, size, edited, created, *note.tags_render)
-    
+
     print(tb)
 
     if list_files:
-        listdir(notes_folder, extension='md')
+        listdir(notes_folder, extension="md")

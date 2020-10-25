@@ -2,7 +2,6 @@ from rich.markdown import Markdown
 from rich import print
 from rich.panel import Panel
 from pyinspect import Report
-from pyinspect import what
 from random import choice
 from pyinspect._colors import (
     lightred,
@@ -52,7 +51,7 @@ class Note:
     def _get_content(self):
         with open(self.path, "r") as f:
             self.raw_content = f.read()
-        self.content = Markdown(self.raw_content, inline_code_lexer='python')
+        self.content = Markdown(self.raw_content, inline_code_lexer="python")
         self.metadata = get_note_metadata(self.name)
 
     @property
@@ -107,7 +106,9 @@ class Note:
             out.write(self.raw_content)
         save_metadata(self.name, self.metadata)
 
-        print(f"[{mocassin}]:ok_hand:  Saved note as: [{orange}]{self.path.name}")
+        print(
+            f"[{mocassin}]:ok_hand:  Saved note as: [{orange}]{self.path.name}"
+        )
 
     def edit(self):
         note_editor(self.path)
@@ -125,31 +126,30 @@ class Note:
         in_list = False
         for n, (current, entering) in enumerate(self.content.parsed.walker()):
             node_type = current.t
-            if node_type in ('heading') and entering:
+            if node_type in ("heading") and entering:
                 if n > 0:
                     show.spacer()
-                show.add(f'[b {orange}]{current.first_child.literal}')
+                show.add(f"[b {orange}]{current.first_child.literal}")
 
-            elif node_type in ('list') and entering:
+            elif node_type in ("list") and entering:
                 in_list = True
                 for sub, ent in current.walker():
-                    if sub.t == 'paragraph' and ent:
+                    if sub.t == "paragraph" and ent:
                         paragraph = parse_paragraph(sub)
-                        show.add(f'- {paragraph}')
+                        show.add(f"- {paragraph}")
 
-            elif node_type in ('list') and not entering:
+            elif node_type in ("list") and not entering:
                 in_list = False
-            elif node_type in ('paragraph') and entering and not in_list:
+            elif node_type in ("paragraph") and entering and not in_list:
                 paragraph = parse_paragraph(current)
-                show.add(f'{paragraph}')
-            elif node_type == 'softbreak':
+                show.add(f"{paragraph}")
+            elif node_type == "softbreak":
                 show.spacer()
 
-            elif node_type == 'code_block':
+            elif node_type == "code_block":
                 show.spacer()
-                language = current.info if current.info else 'python'
-                show.add(current.literal, 'code', language=language)
+                language = current.info if current.info else "python"
+                show.add(current.literal, "code", language=language)
                 show.spacer()
 
         show.print()
- 
