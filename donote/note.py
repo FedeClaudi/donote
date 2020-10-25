@@ -2,6 +2,7 @@ from rich.markdown import Markdown
 from rich import print
 from rich.panel import Panel
 from pyinspect import Report
+from pyinspect import what
 from random import choice
 from pyinspect._colors import (
     lightred,
@@ -19,6 +20,7 @@ from pyinspect._colors import (
 
 from ._notes import _get_note_path, note_editor
 from ._metadata import make_note_metadata, get_note_metadata, save_metadata
+from ._markdown import parse_paragraph
 
 blackboard = "#1f1f1f"
 colors = [
@@ -67,9 +69,10 @@ class Note:
         else:
             tt = []
             for tag in tags:
+                col = choice(colors)
                 tt.append(
                     Panel.fit(
-                        tag, border_style=choice(colors), padding=(-1, 1)
+                        tag, border_style=col, padding=(-1, 1), style=col
                     )
                 )
 
@@ -119,7 +122,34 @@ class Note:
         )
         show._type = self.name
 
-        show.add(self.content, 'rich')
+        in_list = False
+        for n, (current, entering) in enumerate(self.content.parsed.walker()):
+            node_type = current.t
+            if node_type in ('heading') and entering:
+                if n > 0:
+                    show.spacer()
+                show.add(f'[b {orange}]{current.first_child.literal}')
+
+            elif node_type in ('list') and entering:
+                in_list = True
+                for sub, ent in current.walker():
+                    if sub.t == 'paragraph' and ent:
+                        paragraph = parse_paragraph(sub)
+                        show.add(f'- {paragraph}')
+
+            elif node_type in ('list') and not entering:
+                in_list = False
+            elif node_type in ('paragraph') and entering and not in_list:
+                paragraph = parse_paragraph(current)
+                show.add(f'{paragraph}')
+            elif node_type == 'softbreak':
+                show.spacer()
+
+            elif node_type == 'code_block':
+                show.spacer()
+                language = current.info if current.info else 'python'
+                show.add(current.literal, 'code', language=language)
+                show.spacer()
 
         show.print()
  
