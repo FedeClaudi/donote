@@ -115,34 +115,42 @@ class Note:
         self._get_content()
 
     def show(self):
-        show = Report(
-            title=f":pencil:  {self.name}",
-            show_info=True,
-            color=mocassin,
-            accent=orange,
-        )
-        show._type = self.name
+        show = Report(show_info=True, color=orange, accent=orange,)
+        show._type = f":pencil:  {self.name}"
 
-        in_list = False
-        for n, (current, entering) in enumerate(self.content.parsed.walker()):
+        in_list, first_header = False, True
+        for current, entering in self.content.parsed.walker():
             node_type = current.t
             if node_type in ("heading") and entering:
-                if n > 0:
-                    show.spacer()
+                if not first_header:
+                    show.spacer(2)
                 show.add(f"[b {orange}]{current.first_child.literal}")
+                show.spacer()
+                first_header = False
 
             elif node_type in ("list") and entering:
                 in_list = True
                 for sub, ent in current.walker():
                     if sub.t == "paragraph" and ent:
-                        paragraph = parse_paragraph(sub)
-                        show.add(f"- {paragraph}")
+                        paragraph, color = parse_paragraph(sub)
+                        show.add(
+                            f"- {paragraph}"
+                            if color is None
+                            else f"[{color}]- {paragraph}"
+                        )
 
             elif node_type in ("list") and not entering:
                 in_list = False
+                show.spacer()
+
             elif node_type in ("paragraph") and entering and not in_list:
-                paragraph = parse_paragraph(current)
-                show.add(f"{paragraph}")
+                paragraph, color = parse_paragraph(current)
+                show.add(
+                    f"{paragraph}"
+                    if color is None
+                    else f"[{color}]{paragraph}"
+                )
+
             elif node_type == "softbreak":
                 show.spacer()
 
