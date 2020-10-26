@@ -125,6 +125,7 @@ class Note:
     def show(self):
         show = Report(show_info=True, color=orange, accent=orange,)
         show._type = f":pencil:  {self.name}"
+        show.width = 120
 
         in_list, first_header = False, True
         in_quote = False

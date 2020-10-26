@@ -15,6 +15,7 @@ HANDLED = (
     "heading",
     "block_quote",
     "html_inline",
+    "item",
     "html_block",
 )
 
