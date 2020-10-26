@@ -1,4 +1,4 @@
-# knowldege_base
+# Donote
 The minimalist note editor for your terminal. 
 
 
