@@ -45,6 +45,7 @@ def show_note(note_name):
 def edit_note(note_name):
     open_note(note_name).edit()
     print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")
+    show_note(note_name)
 
 
 def tag_note(note_name, tag):
