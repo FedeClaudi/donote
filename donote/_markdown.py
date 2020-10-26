@@ -55,7 +55,7 @@ def parse_paragraph(node, in_list=False):
     else:
         color = None
 
-    return escape(paragraph), color
+    return escape(paragraph).replace("[]", "[ ]").replace("]", "] "), color
 
 
 def parse_block_quote(node):
