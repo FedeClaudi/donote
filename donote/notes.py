@@ -42,6 +42,10 @@ def show_note(note_name):
     open_note(note_name).show()
 
 
+def show_note_html(note_name):
+    open_note(note_name).show_html()
+
+
 def edit_note(note_name):
     open_note(note_name).edit()
     print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")

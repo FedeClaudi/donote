@@ -3,6 +3,7 @@ from rich import print
 from rich.panel import Panel
 from pyinspect import Report
 from random import choice
+from pkg_resources import resource_filename
 from pyinspect._colors import (
     lightred,
     orange,
@@ -16,6 +17,8 @@ from pyinspect._colors import (
     salmon,
     mocassin,
 )
+import os
+
 
 from ._notes import _get_note_path, note_editor
 from ._metadata import make_note_metadata, get_note_metadata, save_metadata
@@ -108,6 +111,19 @@ class Note:
         note.metadata = make_note_metadata(name)
 
         return note
+
+    def show_html(self):
+        inp = str(self.name + ".md")
+        out = "note.html"
+
+        curdir = os.curdir
+        css = resource_filename("donote", f"pandoc.css")
+        os.chdir(self.path.parent)
+
+        command = f'pandoc -f markdown -t html -s {inp} -o {out} -c {css} --metadata title="{self.name}"'
+        os.system(command)
+        os.system(f"open -a firefox {out}")
+        os.chdir(curdir)
 
     def save(self):
         with open(self.path, "w") as out:

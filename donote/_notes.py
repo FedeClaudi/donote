@@ -37,10 +37,10 @@ def note_editor(file_path=None):
 
     try:
         if not windows:
-            subprocess.call(["nano", file_path])
+            subprocess.call(["vi", file_path])
         else:
             subprocess.call(
-                ["C:\\Program Files\\Git\\usr\\bin\\nano.exe", file_path]
+                ["C:\\Program Files\\Git\\usr\\bin\\vi.exe", file_path]
             )
     except Exception as e:
         print(f"[red]Failed to open note editor: {e}")

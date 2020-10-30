@@ -9,7 +9,7 @@ requirements = ["pyinspect", "click", "rich>=9.0.0"]
 
 setup(
     name="donote",
-    version="0.0.3",
+    version="0.0.4",
     description="donote",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -18,6 +18,7 @@ setup(
     python_requires=">=3.6,",
     packages=find_namespace_packages(),
     include_package_data=True,
+    package_data={"donote": ["*.css"]},
     url="https://github.com/FedeClaudi/knowledge_base",
     author="Federico Claudi",
     zip_safe=False,

@@ -9,11 +9,14 @@ from .notes import (
     tag_note,
     untag_note,
     show_file,
+    show_note_html,
 )
 
 commands = dict(
     show=show_note,
     s=show_note,
+    sh=show_note_html,
+    show_html=show_note_html,
     remove=delete_note,
     rm=delete_note,
     delete=delete_note,
