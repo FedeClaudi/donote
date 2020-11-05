@@ -160,11 +160,12 @@ class Note:
                 first_header = False
                 for sub, ent in current.walker():
                     if sub.t == "paragraph" and ent:
-                        paragraph, color = parse_paragraph(sub)
+                        paragraph, color, style = parse_paragraph(sub)
+                        style = style or ""
                         show.add(
                             f"- {paragraph}"
                             if color is None
-                            else f"[{color}]- {paragraph}"
+                            else f"[{color} {style}]- {paragraph}"
                         )
 
             elif node_type in ("list") and not entering:
@@ -178,11 +179,12 @@ class Note:
                 and not in_quote
             ):
                 first_header = False
-                paragraph, color = parse_paragraph(current)
+                paragraph, color, style = parse_paragraph(current)
+                style = style or ""
                 show.add(
                     f"{paragraph}"
                     if color is None
-                    else f"[{color}]{paragraph}"
+                    else f"[{color} {style}]{paragraph}"
                 )
 
             elif node_type == "softbreak" and entering:

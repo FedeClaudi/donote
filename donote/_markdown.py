@@ -49,17 +49,21 @@ def parse_paragraph(node, in_list=False):
     paragraph = parse_text(paragraph)
 
     if paragraph.strip().startswith("[ ]"):
-        color = lightorange
+        color, style = lightorange, None
     elif paragraph.strip().startswith("[x]"):
-        color = lightgreen2
+        color, style = lightgreen2, "dim"
     else:
-        color = None
+        color, style = None, None
 
-    return escape(paragraph).replace("[]", "[ ]").replace("]", "] "), color
+    return (
+        escape(paragraph).replace("[]", "[ ]").replace("]", "] "),
+        color,
+        style,
+    )
 
 
 def parse_block_quote(node):
-    txt, color = parse_paragraph(node)
+    txt, color, _ = parse_paragraph(node)
 
     return txt, f"[dim {color}]" if color is not None else "[dim]"
 
