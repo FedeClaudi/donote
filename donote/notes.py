@@ -39,30 +39,39 @@ def open_note(note_name):
 
 
 def show_note(note_name):
-    open_note(note_name).show()
+    n = open_note(note_name)
+    if n is None:
+        return
+    n.show()
 
 
 def show_note_html(note_name):
-    open_note(note_name).show_html()
+    n = open_note(note_name)
+    if n is None:
+        return
+    n.show_html()
 
 
 def edit_note(note_name):
-    open_note(note_name).edit()
+    n = open_note(note_name)
+    if n is None:
+        return
+    n.edit()
     print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")
     show_note(note_name)
 
 
 def tag_note(note_name, tag):
-    note = open_note(note_name)
-    note.add_tag(tag)
-    note.save()
+    n = open_note(note_name)
+    n.add_tag(tag)
+    n.save()
     print(f":ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}")
 
 
 def untag_note(note_name, tag):
-    note = open_note(note_name)
-    note.pop_tag(tag)
-    note.save()
+    n = open_note(note_name)
+    n.pop_tag(tag)
+    n.save()
     print(f":ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}")
 
 
