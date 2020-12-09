@@ -39,7 +39,8 @@ commands = dict(
 @click.argument("command")
 @click.argument("note_name", default=None, required=False)
 @click.argument("tag", default=None, required=False)
-def cli_main(command, note_name, tag):
+@click.option("--todo", is_flag=True)
+def cli_main(command, note_name, tag, todo):
     if command == "list" or command == "l":
         list_notes()
     else:
@@ -48,8 +49,8 @@ def cli_main(command, note_name, tag):
 
         try:
             if not tag:
-                commands[command](note_name)
+                commands[command](note_name, todo=todo)
             else:
-                commands[command](note_name, tag)
+                commands[command](note_name, tag, todo=todo)
         except KeyError:
             raise ValueError(f"Command {command} is not recognized.")

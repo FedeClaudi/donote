@@ -85,7 +85,6 @@ class Note:
                         tag, border_style=col, padding=(-1, 1), style=col
                     )
                 )
-
             return tt
 
     def add_tag(self, *tags):
@@ -136,13 +135,9 @@ class Note:
 
     def edit(self):
         note_editor(self.path)
-        self._get_content()
+        self._get_content(ignore_metadata=True)
 
-    def show(self):
-        show = Report(show_info=True, color=orange, accent=orange,)
-        show._type = f":pencil:  {self.name}"
-        show.width = 120
-
+    def _parse_content(self, show):
         in_list, first_header = False, True
         in_quote = False
         for current, entering in self.content.parsed.walker():
@@ -154,6 +149,7 @@ class Note:
                 show.add(f"[b {orange}]{current.first_child.literal}")
                 show.spacer()
                 first_header = False
+                show.spacer()
 
             elif node_type in ("list") and entering:
                 in_list = True
@@ -167,6 +163,7 @@ class Note:
                             if color is None
                             else f"[{color} {style}]- {paragraph}"
                         )
+                show.spacer()
 
             elif node_type in ("list") and not entering:
                 in_list = False
@@ -186,6 +183,7 @@ class Note:
                     if color is None
                     else f"[{color} {style}]{paragraph}"
                 )
+                show.spacer()
 
             elif node_type == "softbreak" and entering:
                 show.spacer()
@@ -201,13 +199,18 @@ class Note:
                 txt, style = parse_block_quote(current)
                 show.add(f"[b]> [/b]{style}{txt}")
                 in_quote = True
+
             elif node_type == "block_quote" and not entering:
                 in_quote = False
+                show.spacer()
 
             elif node_type == "html_block" and entering:
                 show.add(parse_html_block(current))
+                show.spacer()
+
             elif node_type == "html_inline" and entering:
                 show.add(parse_html_inline(current))
+                show.spacer()
 
             else:
                 if node_type not in HANDLED:
@@ -215,4 +218,16 @@ class Note:
                         f"Markdown tag not handled yet: [b {orange}]{node_type}"
                     )
 
+        return show
+
+    def show(self):
+        # create pyinspect report
+        show = Report(show_info=True, color=orange, accent=orange,)
+        show._type = f":pencil:  {self.name}"
+        show.width = 120
+
+        # parse note content
+        show = self._parse_content(show)
+
+        # print
         show.print()

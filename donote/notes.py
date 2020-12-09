@@ -12,6 +12,7 @@ from ._notes import (
     note_editor,
 )
 from .note import Note
+from .todo import Todo
 from .paths import notes_folder
 from ._metadata import _get_note_metadata_path
 
@@ -30,35 +31,47 @@ def show_file(filename):
     note.show()
 
 
-def open_note(note_name):
+def open_note(note_name, todo=False):
     try:
-        return Note(note_name)
+        note = Note(note_name) if not todo else Todo(note_name)
     except Exception:
         if Confirm.ask("No note found, create a new one?", default=True):
-            create_note_interactive(note_name)
+            note = create_note_interactive(note_name, todo=todo)
+            return None
+    else:
+        try:
+            if note.metadata["is_todo"] or todo:
+                return Todo(note_name)
+            else:
+                return note
+        except KeyError:
+            return note  # for backward compatibility
 
 
-def show_note(note_name):
-    n = open_note(note_name)
+def show_note(note_name, todo=False):
+    n = open_note(note_name, todo=todo)
     if n is None:
         return
     n.show()
+    return n
 
 
-def show_note_html(note_name):
-    n = open_note(note_name)
+def show_note_html(note_name, todo=False):
+    n = open_note(note_name, todo=todo)
     if n is None:
         return
     n.show_html()
+    return n
 
 
-def edit_note(note_name):
-    n = open_note(note_name)
+def edit_note(note_name, todo=False):
+    n = open_note(note_name, todo=todo)
     if n is None:
         return
     n.edit()
+    n.save()
     print(f":pencil:  [{mocassin}]finished editing [{orange}]{note_name}")
-    show_note(note_name)
+    return show_note(note_name)
 
 
 def tag_note(note_name, tag):
@@ -66,6 +79,7 @@ def tag_note(note_name, tag):
     n.add_tag(tag)
     n.save()
     print(f":ok_hand:  [{mocassin}]added tag to [{orange}]{note_name}")
+    return n
 
 
 def untag_note(note_name, tag):
@@ -73,6 +87,7 @@ def untag_note(note_name, tag):
     n.pop_tag(tag)
     n.save()
     print(f":ok_hand:  [{mocassin}]removed tag from [{orange}]{note_name}")
+    return n
 
 
 def get_all_notes():
@@ -80,7 +95,7 @@ def get_all_notes():
     return [open_note(n.name) for n in notes]
 
 
-def create_note_interactive(note_name):
+def create_note_interactive(note_name, todo=False):
     print(f"[{mocassin}]Making a new note: [{orange}]{note_name}")
 
     path = _get_note_path(note_name, raise_error=False)
@@ -91,17 +106,19 @@ def create_note_interactive(note_name):
             return
 
     # Create a live editor to fill in note content
-    try:
-        content = note_editor()
-    except Exception:
-        print(f"[{orange}]Creating empty note instead")
-        return create_new_note(note_name)
+    content = note_editor()
 
     # Save note to file
-    Note.from_string(content, note_name).save()
+    if not todo:
+        note = Note.from_string(content, note_name)
+    else:
+        note = Todo.from_string(content, note_name)
+    note.save()
+
+    return note
 
 
-def create_new_note(note_name):
+def create_new_note(note_name, todo=False):
     print(f"[{mocassin}]Making a new empty note: [{orange}]{note_name}")
 
     path = _get_note_path(note_name, raise_error=False)
@@ -111,14 +128,17 @@ def create_new_note(note_name):
             print(f"[{mocassin}]    okay, not saving then.")
             return
 
-    note = Note.from_string("", note_name)
+    if not todo:
+        note = Note.from_string("", note_name)
+    else:
+        note = Todo.from_string("", note_name)
     note.save()
 
     print(f"[{mocassin}]    saved note at: [{orange}]{note_name}")
     return note
 
 
-def delete_note(note_name, force=False):
+def delete_note(note_name, force=False, **kwargs):
     path = _get_note_path(note_name)
     metadata_path = _get_note_metadata_path(note_name)
 
@@ -134,7 +154,7 @@ def delete_note(note_name, force=False):
         print(f"    [{mocassin}]removed: [{orange}]{note_name}")
 
 
-def list_notes(list_files=False):
+def list_notes(list_files=False, **kwargs):
 
     tb = Table(header_style="bold green", box=SIMPLE_HEAVY, min_width=88)
     tb.add_column(header="Name", min_width=20)

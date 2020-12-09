@@ -2,7 +2,7 @@ import json
 
 from .paths import note_metadata_folder
 
-_metadata_template = dict(name="", tags=[],)
+_metadata_template = dict(name="", tags=[], is_todo=False)
 
 
 def _get_note_metadata_path(note_name, raise_error=True):

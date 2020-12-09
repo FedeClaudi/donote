@@ -15,6 +15,7 @@ from .utils import format_timestamp
 def _get_note_path(note_name, raise_error=True):
     if ".md" not in note_name:
         note_name += ".md"
+
     path = notes_folder / note_name
     if not path.exists() and raise_error:
         raise FileNotFoundError(f"Could not find note with name {note_name}")
