@@ -74,7 +74,7 @@ def edit_note(note_name, todo=False):
     return show_note(note_name)
 
 
-def tag_note(note_name, tag):
+def tag_note(note_name, tag, **kwargs):
     n = open_note(note_name)
     n.add_tag(tag)
     n.save()
@@ -82,7 +82,7 @@ def tag_note(note_name, tag):
     return n
 
 
-def untag_note(note_name, tag):
+def untag_note(note_name, tag, **kwargs):
     n = open_note(note_name)
     n.pop_tag(tag)
     n.save()
